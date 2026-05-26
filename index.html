@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sup</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <div class="bg"></div>
+    <nav class="nav-bar">
+        <a href="#welcome">Welcome</a>
+        <a href="#about">About Me</a>
+        <a href="#hobbies">Hobbies & Interests</a>
+        <button class="pipe-falling-btn" onclick="triggerSurprise()">What's this? (sound warning)</button>
+    </nav>
+
+    <div id="pipe-falling-overlay" onclick="closeSurprise()">
+        <img src="assets/metal pipe.jpg">
+        <audio id="pipe-falling-audio" src="assets/metal pipe sound.mp3" preload="auto"></audio>
+    </div>
+    <header class="text-container" id="welcome">
+        <h1>
+            Welcome!
+        </h1>
+        <h2>
+            Hi! Thanks for taking the time to be here.
+            My name's William, and I'm an international first year software 
+            engineering student. Hoping to get some hands-on experience with development
+            alongside some amazing people in DevSoc :)
+        </h2>
+    </header>
+    <div class="text-container" id="about">
+        <h1>
+            About Me
+        </h1>
+        <div class="two-column">
+            <img src="assets/images/pool.jpeg">
+            <p>
+                For a more detailed introduction: My name's William Adhika Setiawan.
+                I'm a 19 y.o. student in the Bachelor of Engineering (Software) 
+                program coming from Indonesia. <br><br>
+                I've had a lot of exposure to programming since I was relatively 
+                young, such as through school and a software development internship, 
+                but I have yet to finish an actual project I am proud of. 
+                Hoping to change that by being a part of training program!
+            </p>
+        </div>
+        
+    </div>
+
+    <div class="text-container" id="hobbies">
+        <h1>Hobbies and Interests</h1>
+        <div class="two-column">
+            <img src="assets/images/pool.jpeg">
+            <p>
+                I've picked up a lot of new hobbies ever since I arrived, but one of
+                my newest biggest addictions is pool! I also keep up with other sports 
+                such as badminton, golf, and bouldering, though not nearly as often.
+            </p>
+        </div>
+        <div class="two-column">
+            <p>
+                I'm very much into gaming, though I'm sure noone's surprised about
+                that. I'm mostly into competitive shooters such as Valorant (PRX MY GOAT) and Apex 
+                Legends, but I play just about everything; MOBAs, fighting games, 
+                RPGS, roguelikes, etc. 
+            </p>
+            <img src="assets/images/prx.jpeg">
+        </div>
+        <div class="two-column">
+            <img src="assets/images/mewtwo.jpeg">
+            <p>
+                Also a fan of Pokemon! (as you could probably guess by the many 
+                of them flying across the screen). I'm a pretty casual TCG collector,
+                that Mewtwo being my biggest hit. I also play TCG Pocket and I have 
+                a very faint memory of playing Pokemon Emerald on the DS.<br><br>
+                My favorites are Altaria, Flutter Mane, and Zorua, though the list
+                can go on and on.
+            </p>
+        </div>
+    </div>
+    
+</body>5

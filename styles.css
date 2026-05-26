@@ -1,0 +1,146 @@
+@font-face {
+    font-family: 'pixelFont';
+    src: url('./assets/fonts/Pixellari.ttf') format('truetype');
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+* {
+    font-family: 'pixelFont', sans-serif;
+    letter-spacing: 0.05em;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    font-size: 3rem;
+    text-align: center;
+}
+
+p {
+    font-size: 1.5rem;
+}
+
+:root {
+    --bg-image: url('./assets/images/day.jpg');
+    --bg-color: rgba(0, 0, 0, 0.5);
+    --text-color: white;
+}
+
+/*
+Style for day/night toggle
+*/
+
+body.day-mode {
+    --bg-image: url('./assets/images/day.jpg');
+    --bg-color: rgba(0, 0, 0, 0.5);
+    --text-color: white;
+}
+
+body.night-mode {
+    --bg-image: url('./assets/images/night.jpg');
+    --bg-color: rgba(255, 255, 255, 0.9);
+    --text-color: #222;
+}
+
+/*
+Navbar
+*/
+
+.nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    gap: 2rem;
+    padding: 1rem 3rem;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.nav-bar a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-size: 1.2rem;
+}
+
+.nav-bar a:hover {
+    text-decoration: underline;
+}
+
+/*
+PIPE
+*/
+.pipe-falling-btn {
+    margin-left: auto;
+    border: none;
+    text-decoration: none;
+    background-color: transparent;
+    color: var(--text-color);
+    font-family: 'pixelFont', sans-serif;
+    font-size: 0.5rem;
+    cursor: pointer;
+}
+
+.pipe-falling-btn:hover {
+    text-decoration: underline;
+}
+
+#pipe-falling-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    background: black;
+    cursor: pointer;
+}
+
+#pipe-falling-overlay img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.text-container {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 3rem;
+    padding: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.two-column {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    margin: 1rem;
+}
+
+.two-column img {
+    width: 20%;
+    flex-shrink: 0;
+}
+
+.two-column p {
+    flex: 1;
+}
+
+.bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    z-index: -1;
+    pointer-events: none;
+    will-change: background, transform;
+}
