@@ -150,7 +150,7 @@ function spawnPokemon(pokemon, grounded, shiny) {
 
     // Grounded = near bottom edge; otherwise a random Y below the nav bar
     const spawnY = grounded
-        ? window.innerHeight - SPRITE_SIZE - 10
+        ? window.innerHeight - SPRITE_SIZE + 5
         : navH + 10 + Math.random() * (window.innerHeight - navH - SPRITE_SIZE - 20);
 
     // Pick a random starting direction: 1 = right, -1 = left
