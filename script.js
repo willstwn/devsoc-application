@@ -1,10 +1,12 @@
+// - Day/Night Modes -----------------------------------------------------------
 // Returns true if time is day mode
 function isDay(hour) {
     return hour >= 6 && hour < 18;
 }
 
 // Applies the time mode changes
-// 'animate' is bool on whether to animate change between modes, false when initialized
+// 'animate' is bool on whether to animate change between modes, false when 
+// initialized
 function applyTimeMode(animate) {
     const body = document.body;
     const hour = new Date().getHours();
@@ -19,11 +21,7 @@ function applyTimeMode(animate) {
         body.classList.remove(removeMode);
         body.classList.add(targetMode);
 
-        // requestAnimationFrame defers execution to just before the next paint.
-        // Double-nesting it ensures the first frame (with opacity:0 / initial state)
-        // has been fully committed to the screen before we unlock CSS transitions —
-        // otherwise the browser might batch the class add and the transition toggle
-        // into the same frame and skip the animation entirely.
+        // Double rAF to prevent rendering bugs
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 body.classList.add('transitions-enabled');
@@ -105,11 +103,14 @@ function updateToggleButton() {
 }
 
 
-// ─── Pokemon Spawner ─────────────────────────────────────────────────────────
-
-const POKEMON_SPEED = 0.3;   // px per animation frame (~30 px/s at 60 fps)
-const SHINY_CHANCE  = 0.02;  // 2% per spawn
-const SPRITE_SIZE   = 96;    // rendered width in px (used for spawn boundary maths)
+// - Pokemon Spawner -----------------------------------------------------------
+// Devnote: I will admit i had AI teach me a lot of this, but i SWEAR i'm learning
+// from what Claude is spitting out. I can read and explain my own code here, and
+// given enough time, i would be able to write this on my own with the knowledge
+// i've obtained. 
+const POKEMON_SPEED = 0.3;   // px per frame
+const SHINY_CHANCE  = 0.01;  // chance of shiny per spawn
+const SPRITE_SIZE   = 96;    // rendered width in px 
 
 const DAY_POKEMON = [
     { name: 'espeon',    grounded: true  },
@@ -123,12 +124,14 @@ const NIGHT_POKEMON = [
     { name: 'shedinja',   grounded: false },
 ];
 
-// All currently live Pokemon: { element, dirElement, img, name, shiny, xOffset, dir, state, roamAt }
+// List of all currently live Pokemon
+// no wonder ppl use typescript, its insane you don't have to declare anything abt
+// the objects u could put in here when it has like 7 properties
 const activePokemon = [];
 let rafId = null;
 
 // Builds the local asset path for a sprite
-// state is either 'idle' or 'roaming' (maps to idle/walk gif)
+// state is either 'idle' or 'roaming' 
 function getSpriteUrl(name, shiny, state) {
     const variant   = shiny ? 'shiny' : 'default';
     const animation = state === 'roaming' ? 'walk' : 'idle';
@@ -136,12 +139,7 @@ function getSpriteUrl(name, shiny, state) {
     return `./assets/images/sprites/${name}/${variant}_${animation}_8fps.gif`;
 }
 
-/**
- * Spawns a single Pokemon on screen.
- * @param {object}  pokemon  - a Pokemon data object from one of the pools { name }
- * @param {boolean} grounded - if true, spawn is locked to the bottom of the viewport
- * @param {boolean} shiny    - if true, use the shiny sprite variant
- */
+// Spawns a single pokemon on screen with properites according to given parameters
 function spawnPokemon(pokemon, grounded, shiny) {
     const navH = document.querySelector('.nav-bar')?.offsetHeight ?? 60;
 
@@ -156,21 +154,19 @@ function spawnPokemon(pokemon, grounded, shiny) {
     // Pick a random starting direction: 1 = right, -1 = left
     const dir = Math.random() < 0.5 ? 1 : -1;
 
-    // --- Build the three-layer DOM structure ---
-
-    // Layer 1: entity — position, opacity, and translateX movement
+    // Entity transform, position, opacity
     const entity = document.createElement('div');
     entity.className     = 'pokemon-entity';
     entity.style.left    = spawnX + 'px';
     entity.style.top     = spawnY + 'px';
     entity.style.opacity = '0';
 
-    // Layer 2: dir — horizontally flips the sprite to face the direction of travel
+    // Handles horizontal orientation of asset
     const dirElement = document.createElement('div');
     dirElement.className       = 'pokemon-dir';
     dirElement.style.transform = `scaleX(${dir})`;
 
-    // Layer 3: img — starts on the idle gif, swapped to walk gif when roaming begins
+    // Handles img properties of the Pokemon object
     const img = document.createElement('img');
     img.className  = 'pokemon-sprite';
     img.src        = getSpriteUrl(pokemon.name, shiny, 'idle');
@@ -188,8 +184,8 @@ function spawnPokemon(pokemon, grounded, shiny) {
         });
     });
 
-    // Sit idle for 1–5 s before roaming
-    const roamAt = Date.now() + 1000 + Math.random() * 4000;
+    // Sit idle for certain time before roaming
+    const roamAt = Date.now() + 1000 + Math.random() * 4000; // 1- 5s
 
     activePokemon.push({
         element: entity, dirElement, img,
@@ -199,11 +195,7 @@ function spawnPokemon(pokemon, grounded, shiny) {
     });
 }
 
-/**
- * Picks 4–7 random Pokemon from the correct pool and spawns them.
- * Also handles clearing any existing Pokemon on a mode switch.
- * @param {boolean} dayMode - true = use the day pool
- */
+// Spawns a random number of Pokemon depending on day/night cycle
 function spawnGroup(dayMode) {
     const pool  = dayMode ? DAY_POKEMON : NIGHT_POKEMON;
     const count = 4 + Math.floor(Math.random() * 4); // 4, 5, 6, or 7
@@ -222,7 +214,7 @@ function spawnGroup(dayMode) {
     });
 }
 
-// Fades out every active Pokemon, removes them from the DOM, then runs the callback
+// Fades out every active Pokemon
 function clearAllPokemon(callback) {
     if (activePokemon.length === 0) {
         if (callback) callback();
@@ -248,12 +240,12 @@ function clearAllPokemon(callback) {
     }, 1000);
 }
 
-// Shared RAF loop — advances all roaming Pokemon one step each frame
+// Loop to animate Pokemon every frame
 function rafLoop() {
     const now = Date.now();
 
     for (const p of activePokemon) {
-        // Idle → roaming: swap to walk gif once the timer expires
+        // Swap assets when changing state
         if (p.state === 'idle' && now >= p.roamAt) {
             p.state  = 'roaming';
             p.img.src = getSpriteUrl(p.name, p.shiny, 'roaming');
@@ -273,12 +265,12 @@ function rafLoop() {
         }
     }
 
+    // Store for future use (stopping animation)
     rafId = requestAnimationFrame(rafLoop);
 }
 
 
-// ─── Initialize every script on load ────────────────────────────────────────
-
+// Initialize every script
 document.addEventListener('DOMContentLoaded', () => {
     applyTimeMode(false);   // snap to correct mode, animate is false
     scheduleNextSwitch();   // queue switch
@@ -287,8 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// ─── Metal Pipe ──────────────────────────────────────────────────────────────
-
+// - Metal Pipe ----------------------------------------------------------------
 // Activates the pipe overlay and plays sound
 function triggerSurprise() {
     const overlay = document.getElementById('pipe-falling-overlay');

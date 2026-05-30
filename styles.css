@@ -33,6 +33,11 @@ p {
     font-size: 1.5rem;
 }
 
+h5 {
+    font-weight: normal;
+    color: white;
+    text-align: center;
+}
 :root {
     --bg-color: rgba(0, 0, 0, 0.5);
     scrollbar-width: none;
