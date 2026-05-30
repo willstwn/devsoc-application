@@ -1,3 +1,9 @@
+@property --bg-color {
+    syntax: '<color>';
+    initial-value: rgba(0, 0, 0, 0.5);
+    inherits: true;
+}
+
 @font-face {
     font-family: 'pixelFont';
     src: url('./assets/fonts/Pixellari.ttf') format('truetype');
@@ -11,6 +17,7 @@ html {
     font-family: 'pixelFont', sans-serif;
     letter-spacing: 0.05em;
 }
+
 
 body {
     margin: 0;
@@ -27,31 +34,31 @@ p {
 }
 
 :root {
-    --bg-image: url('./assets/images/day.jpg');
     --bg-color: rgba(0, 0, 0, 0.5);
-    --text-color: white;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-/*
-Style for day/night toggle
-*/
-
+/* Day and Night background change */
 body.day-mode {
-    --bg-image: url('./assets/images/day.jpg');
     --bg-color: rgba(0, 0, 0, 0.5);
-    --text-color: white;
 }
 
 body.night-mode {
-    --bg-image: url('./assets/images/night.jpg');
-    --bg-color: rgba(255, 255, 255, 0.9);
-    --text-color: #222;
+    --bg-color: rgba(0, 0, 0, 0.3);
 }
 
-/*
-Navbar
-*/
+/* Transition classes for mode switch */
+body.transitions-enabled {
+    transition: --bg-color 3s ease;
+}
 
+body.transitions-enabled .bg::before,
+body.transitions-enabled .bg::after {
+    transition: opacity 3s ease;
+}
+
+/* Navbar */
 .nav-bar {
     position: sticky;
     top: 0;
@@ -64,7 +71,7 @@ Navbar
 }
 
 .nav-bar a {
-    color: var(--text-color);
+    color: white;
     text-decoration: none;
     font-size: 1.2rem;
 }
@@ -73,15 +80,45 @@ Navbar
     text-decoration: underline;
 }
 
-/*
-PIPE
-*/
-.pipe-falling-btn {
+.nav-right {
     margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+#nav-clock {
+    font-size: 1rem;
+    color: white;
+    letter-spacing: 0.08em;
+    min-width: 6.5ch;   
+    text-align: right;
+}
+
+.mode-toggle-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    color: white;
+    font-family: 'pixelFont', sans-serif;
+    font-size: 1rem;
+    padding: 0.15rem 0.55rem;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.mode-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: white;
+}
+
+/* Pipe falling */
+.pipe-falling-btn {
     border: none;
     text-decoration: none;
     background-color: transparent;
-    color: var(--text-color);
+    color: white;
     font-family: 'pixelFont', sans-serif;
     font-size: 0.5rem;
     cursor: pointer;
@@ -90,6 +127,7 @@ PIPE
 .pipe-falling-btn:hover {
     text-decoration: underline;
 }
+
 
 #pipe-falling-overlay {
     display: none;
@@ -106,9 +144,10 @@ PIPE
     object-fit: contain;
 }
 
+/* Other layout*/
 .text-container {
     background-color: var(--bg-color);
-    color: var(--text-color);
+    color: white;
     margin: 3rem;
     padding: 1rem;
     position: relative;
@@ -131,16 +170,60 @@ PIPE
     flex: 1;
 }
 
+/* Handles background change animation between mode switches */
 .bg {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: var(--bg-image);
-    background-size: cover;
-    background-position: center;
     z-index: -1;
     pointer-events: none;
-    will-change: background, transform;
+}
+
+.bg::before,
+.bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+}
+
+.bg::before {
+    background-image: url('./assets/images/day.jpg');
+    opacity: 1;
+}
+
+.bg::after {
+    background-image: url('./assets/images/night.jpg');
+    opacity: 0;
+}
+
+body.night-mode .bg::before {
+    opacity: 0;
+}
+
+body.night-mode .bg::after {
+    opacity: 1;
+}
+
+/* --- Pokemon sprites --- */
+
+.pokemon-entity {
+    position: fixed;
+    z-index: 0;           /* above background (-1), behind text boxes (1) and nav (100) */
+    pointer-events: none; /* never block clicks */
+    transition: opacity 1s ease;
+    will-change: transform, opacity;
+}
+
+.pokemon-dir {
+    /* scaleX flip is controlled by JS -- no other styles needed */
+}
+
+.pokemon-sprite {
+    width: 96px;
+    display: block;
+    image-rendering: pixelated; /* keep pixel art crisp when scaled */
 }
