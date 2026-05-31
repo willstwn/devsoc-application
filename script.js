@@ -104,12 +104,10 @@ function updateToggleButton() {
 
 
 // - Pokemon Spawner -----------------------------------------------------------
-// Devnote: I will admit i had AI teach me a lot of this, but i SWEAR i'm learning
-// from what Claude is spitting out. I can read and explain my own code here, and
-// given enough time, i would be able to write this on my own with the knowledge
-// i've obtained. 
+// Devnote: I will admit i had AI teach me a lot of this, but i'm putting in the
+// effort to comprehend and tweak whatever Claude is spitting out.
 const POKEMON_SPEED = 0.3;   // px per frame
-const SHINY_CHANCE  = 0.01;  // chance of shiny per spawn
+const SHINY_CHANCE  = 0.005;  // chance of shiny per spawn
 const SPRITE_SIZE   = 96;    // rendered width in px 
 
 const DAY_POKEMON = [
@@ -125,9 +123,9 @@ const NIGHT_POKEMON = [
 ];
 
 // List of all currently live Pokemon
-// no wonder ppl use typescript, its insane you don't have to declare anything abt
-// the objects u could put in here when it has like 7 properties
 const activePokemon = [];
+
+// Stores id of latest rAF
 let rafId = null;
 
 // Builds the local asset path for a sprite
@@ -162,6 +160,7 @@ function spawnPokemon(pokemon, grounded, shiny) {
     entity.style.opacity = '0';
 
     // Handles horizontal orientation of asset
+    // Separate layer to allow for multiple transforms
     const dirElement = document.createElement('div');
     dirElement.className       = 'pokemon-dir';
     dirElement.style.transform = `scaleX(${dir})`;
@@ -209,7 +208,9 @@ function spawnGroup(dayMode) {
         }
 
         // Kick off the shared animation loop
-        if (rafId) cancelAnimationFrame(rafId);
+        if (rafId) {
+            cancelAnimationFrame(rafId);
+        }
         rafLoop();
     });
 }

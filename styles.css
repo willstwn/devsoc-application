@@ -35,22 +35,35 @@ p {
 
 h5 {
     font-weight: normal;
-    color: white;
     text-align: center;
+    color: black;
+    position: relative;
+    z-index: 1;
 }
+
+
+
 :root {
     --bg-color: rgba(0, 0, 0, 0.5);
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
 
-/* Day and Night background change */
+/* Day and Night theme change */
 body.day-mode {
     --bg-color: rgba(0, 0, 0, 0.5);
 }
 
 body.night-mode {
     --bg-color: rgba(0, 0, 0, 0.3);
+}
+
+body.day-mode h5 {
+    color: black;
+}
+
+body.night-mode h5 {
+    color: white;
 }
 
 /* Transition classes for mode switch */
@@ -61,6 +74,48 @@ body.transitions-enabled {
 body.transitions-enabled .bg::before,
 body.transitions-enabled .bg::after {
     transition: opacity 3s ease;
+}
+
+body.transitions-enabled h5 {
+    transition: color 3s ease;
+}
+
+/* Handles background change animation between mode switches */
+.bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.bg::before,
+.bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+}
+
+.bg::before {
+    background-image: url('./assets/images/day.jpg');
+    opacity: 1;
+}
+
+.bg::after {
+    background-image: url('./assets/images/night.jpg');
+    opacity: 0;
+}
+
+body.night-mode .bg::before {
+    opacity: 0;
+}
+
+body.night-mode .bg::after {
+    opacity: 1;
 }
 
 /* Navbar */
@@ -175,56 +230,19 @@ body.transitions-enabled .bg::after {
     flex: 1;
 }
 
-/* Handles background change animation between mode switches */
-.bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
-}
 
-.bg::before,
-.bg::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-}
-
-.bg::before {
-    background-image: url('./assets/images/day.jpg');
-    opacity: 1;
-}
-
-.bg::after {
-    background-image: url('./assets/images/night.jpg');
-    opacity: 0;
-}
-
-body.night-mode .bg::before {
-    opacity: 0;
-}
-
-body.night-mode .bg::after {
-    opacity: 1;
-}
-
-/* --- Pokemon sprites --- */
+/* Pokemon sprites */
 
 .pokemon-entity {
     position: fixed;
-    z-index: 0;           /* above background (-1), behind text boxes (1) and nav (100) */
-    pointer-events: none; /* never block clicks */
+    z-index: 0;           
+    pointer-events: none; 
     transition: opacity 1s ease;
     will-change: transform, opacity;
 }
 
 .pokemon-dir {
-    /* scaleX flip is controlled by JS -- no other styles needed */
+    /* scaleX flip is controlled by JS, no other styles needed */
 }
 
 .pokemon-sprite {
